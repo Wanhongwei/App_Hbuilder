@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/iconfont.css" />
+		<script src="js/vue/vue.js"></script>
+		<style>
+			html,body {
+			height:100%;
+			}
+			ul {
+				font-size: 14px;
+			}
+			#colorli {
+				background-color: burlywood
+			}
+			.mui-btn {
+				padding: 10px;
+			}
+			.mui-grid-view.mui-grid-9 {
+			    margin: 0;
+			    padding: 0;
+			    border-top: 1px solid #eee;
+			    border-left: 1px solid #eee;
+			    background-color:white;
+			}
+			.mui-table-view-cell {
+			    margin: 0;
+			    padding: 11px 10px;
+			    vertical-align: top;
+			    /* border-right: 3px solid #E8E8E8; */
+			    border-bottom: 0px solid #999999;
+			}
+			/* 设置中间cell内边距 */
+			.mui-table-view-chevron .mui-table-view-cell {
+			    padding-right: 5px;
+			}
+			.mui-table-view:before {
+			    position: absolute;
+			    right: 0;
+			    left: 0;
+			    height: 1px;
+			    content: '';
+			    -webkit-transform: scaleY(.5);
+			    transform: scaleY(.5);
+			    background-color: white;
+			    top: -1px;
+			}
+			.mui-middle{
+				 display:list-item;
+				  margin: 5px auto;
+			}
+			.mui-input-row {
+			    position: relative;
+			    margin: 5px;
+				clear: left;
+				overflow: hidden;
+				background: beige;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="padding-right: 15px;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" ></a>
+			<h1 class="mui-title">任务明细</h1>
+			<!-- <span class="mui-pull-right mui-icon mui-icon-home"></span> -->
+		</header>
+		<div id="workDetail" class="mui-content">
+			<div class="mui-content-padded" >
+				  <div class="mui-scroll-wrapper"   style="position: static;background-color: white;height: 400px;">
+					  <div style="position:relative;padding-top:5px;text-align:center;height: 20px;" >
+					  	<button v-on:tap="save" type="button" class="mui-btn mui-btn-success mui-pull-right" data-loading-text="提交中"  style="margin-right: 5%;" >提交</button>
+						<button  type="button" class="mui-action-back mui-btn mui-btn-warning  mui-pull-right"  style="margin-right: 5%;">取消</button>
+					  </div>
+					  <div class="mui-middle" >
+					  	<div class="mui-input-row" >
+					  			<label>单  号：</label>
+					  			<input type="text" v-model="formdata.Code" disabled="disabled">
+					  		</div>
+					  		<div class="mui-input-row">
+					  			<label>安灯分类：</label>
+					  			<input type="text" v-model="formdata.AcName" disabled="disabled">
+					  		</div>
+					  		<div class="mui-input-row">
+					  			<label>安灯事件：</label>
+					  			<input type="text" v-model="formdata.Msg" disabled="disabled">
+					  		</div>
+							<div class="mui-input-row" >
+								<label>安灯设备：</label>
+								<input type="text" v-model="formdata.Ename" >
+							</div>
+					  	<div class="mui-input-row" >
+					  		<label>呼叫时间：</label>
+					  		<input type="text" v-model="formdata.CallDate" >
+					  	</div>
+					  	<div class="mui-input-row" >
+					  		<label>接收人 ：</label>
+					  		<input type="text" v-model="formdata.userName" >
+					  	</div>
+						<div class="mui-input-row" style="background: #2AC845;">
+							<label>接收时间：</label>
+							<input type="datetime-local"  v-model="formdata.timeDate" >
+						</div>
+					  </div>
+				  </div>
+			</div>
+			<!-- <div class="mui-content-padded" style="position: fixed;bottom: 0;width: 95%;margin: 10px">
+				 <ul class="mui-table-view mui-grid-view mui-grid-9">
+				     <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="#">
+							  <span class="mui-icon iconfont icon-weijieshou"></span>
+				             <div class="mui-media-body">未接收({{receiveMes.unreceived}})</div></a></li>
+				     <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="#">
+				             <span class="mui-icon iconfont icon-yijieshou"></span>
+				             <div class="mui-media-body">已接收({{receiveMes.receive}})</div></a></li>
+				     <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="#">
+				             <span class="mui-icon iconfont icon-yiwancheng"></span>
+				             <div class="mui-media-body">已完成({{receiveMes.complete}})</div></a></li>
+				 </ul>
+			</div> -->	
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+		<script src="js/muiMethods.js"> </script>
+		<script src="js/iconfont.js"></script>
+		<script>
+			(function($, doc) {
+				 var vm=new Vue({  
+						el:'#workDetail',  
+						data:{
+							item:{},
+							receiveMes:{unreceived:'',receive:'',complete:''},
+							formdata:{
+							Aeid: '',
+							Code: '',
+							AcName: '',
+							AcCode: '',
+							Msg: '',
+							Ename: '',
+							CallDate: '',
+							userName:'',
+							userId:'',
+							timeDate:new Date()
+							}
+						},
+						mounted:function() {
+						   mui.init({
+							beforeback: function() {
+					   　　　　 //获得父页面的webview
+							   var list = plus.webview.currentWebview().opener();
+					   　　　　 //触发父页面的自定义事件(refresh),从而进行刷新
+							   mui.fire(list, 'refresh');
+							   //返回true,继续页面关闭逻辑
+							   return true;
+						   }
+						   });
+						   mui.plusReady(function() {
+							   vm.height = doc.documentElement.clientHeight+'px' || doc.body.clientHeight+'px';
+						   		// doc.getElementsByClassName('mui-scroll-wrapper')[0].style.minHeight=vm.height
+								if(mui.os.plus){
+						   			mui.plusReady(function(){
+										var self = plus.webview.currentWebview();
+										vm.item =self.item;
+										vm.receiveMes =self.receiveMes;
+										vm.getData(vm.item.Aeid,vm.item.AcCode);
+						   			})
+						   		}else{
+						   			vm.item = localStorage.getItem('item');
+									vm.receiveMes = localStorage.getItem('receiveMes');
+						   			vm.getData(vm.item.Aeid,vm.item.AcCode);
+						   		}	
+						   });
+						 },
+						 methods:{
+							 getData:function(Aeid,acCode){
+								 $.ajaxRequest('shyh.app/First/LoadAbEvent?Aeid='+Aeid+'&acCode='+acCode+'&secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM',{
+								 	type: "Get",
+								 	success:function(data){
+								 		vm.formdata=data.data;
+										vm.formdata.userName=JSON.parse(localStorage.getItem('userInfo')).UserName;
+										vm.formdata.userId=JSON.parse(localStorage.getItem('userInfo')).UserId;
+								 	}, 
+								 	error:function(xhr){
+										mui.toast(JSON.stringify(JSON.parse(xhr.response).message),{ duration:'long'});
+										// console.log(JSON.stringify(JSON.parse(xhr.response).message))
+								 		 // console.log(JSON.parse(JSON.stringify(xhr.response)).get('code'))
+								 	}
+								 });
+							 },
+							 formateDate:function(time){
+								 var day = ("0" + time.getDate()).slice(-2);
+								 var month = ("0" + (time.getMonth() + 1)).slice(-2);
+								 return time.getFullYear() + "-" + (month) + "-" + (day);
+							 },
+							 save:function(){
+								 if(vm.formdata.timeDate){
+									 $.ajaxRequest('shyh.app/First/Receive?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM',{
+									 	type: "Post",
+										data:{
+											Aeid:vm.formdata.Aeid,
+											Accode:vm.formdata.AcCode,
+											recMan:vm.formdata.userId,
+											recTime:vm.formdata.timeDate
+										},
+									 	success:function(data){
+											if(data.code==-1){
+												mui.toast('参数错误！');
+											}else{
+												mui.toast('提交成功');
+												mui.back();
+											}
+									 		
+									 	}, 
+									 	error:function(xhr){
+											// console.log(JSON.stringify(xhr))
+									 		 // mui.toast(JSON.stringify(JSON.parse(xhr.response).message),{ duration:'long'});
+									 	}
+									 });
+								 }else{
+									 mui.toast("请选择接收时间！")
+								 }
+							 }
+						 }
+				})
+				
+			}(mui, document));
+		</script>
+	</body>
+
+</html>

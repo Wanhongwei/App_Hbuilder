@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<style>
+			.area {
+				margin: 20px auto 0px auto;
+			}
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 78%;
+			}
+			.mui-checkbox input[type=checkbox],
+			.mui-radio input[type=radio] {
+				top: 6px;
+			}
+			.mui-content-padded {
+				margin-top: 25px;
+			}
+			.mui-btn {
+				padding: 10px;
+			}
+			.mui-input-row label~input, .mui-input-row label~select, .mui-input-row label~textarea {
+			    width: 68%;
+			}
+			.mui-input-row label {
+			    font-family: 'Helvetica Neue',Helvetica,sans-serif;
+			    line-height: 1.1;
+			    float: left;
+			    width: 25%;
+			    padding: 11px 15px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">服务配置</h1>
+		</header>
+		<div class="mui-content">
+			<form class="mui-input-group">
+				<div class="mui-input-row">
+					<label>IP地址:</label>
+					<input id='ip' type="text" class="mui-input-clear mui-input" placeholder="192.168.102.66">
+				</div>
+				<div class="mui-input-row">
+					<label>端口号:</label>
+					<input id='port' type="text" class="mui-input-clear mui-input" placeholder="8080">
+				</div>
+			</form>
+			<div class="mui-content-padded">
+				<button id='reg' class="mui-btn mui-btn-block mui-btn-primary">配置</button>
+			</div>
+			<div class="mui-content-padded">
+				<p>配置真实可用，配置成功后的用户可用于登录，用户相关数据仅存储于本地。</p>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+		<script>
+			(function($, doc) {
+				$.init();
+				$.plusReady(function() {
+					var regButton = doc.getElementById('reg');
+					var ipBox = doc.getElementById('ip');
+					var portBox = doc.getElementById('port');
+					var info=app.getSettings('$settings');
+					ipBox.value=info.ip;
+					portBox.value=info.port;
+					regButton.addEventListener('tap', function(event) {
+						var regInfo = {
+							ip: ipBox.value,
+							port: portBox.value,
+						};
+						if(!regInfo.ip){//58.208.84.68   /192.168.102.66
+							regInfo.ip='192.168.102.66';
+						};
+						if(!regInfo.port){//8099  /8080
+							regInfo.port='8080';
+						}
+						app.setSettings(regInfo);
+						mui.openWindow({
+							url: 'login.html',
+							id: 'login',
+							createNew:true
+						});
+					});
+				});
+			}(mui, document));
+		</script>
+	</body>
+
+</html>

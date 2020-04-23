@@ -1,0 +1,363 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.css" rel="stylesheet" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8"/>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/jquery-3.4.1.js"></script>
+		<script type="text/javascript" src="../../js/common.js"></script>
+		<style type="text/css">
+			.aname {
+				font-size: 16px;
+			}
+			.ainf {
+				font-size: 12px;
+			}
+			.iplay {
+				display: block;
+				background: no-repeat right center url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABYCAYAAAADWlKCAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAKwwAACsMBNCkkqwAAABZ0RVh0Q3JlYXRpb24gVGltZQAwOS8xMi8xM5w+I3MAAAAcdEVYdFNvZnR3YXJlAEFkb2JlIEZpcmV3b3JrcyBDUzVxteM2AAAD9UlEQVR4nO2b3XETMRRGDwzvoYOkg5hRAVkqiKmAdIA7wHSQVECoALsC1gXciV0BTge4gvCwgnHk9d/+WF8m97ztxrlXs8fS1Urym6enJxwd3uZugPMcFyKGCxHDhYjhQsRwIWK4EDFciBguRAwXIoYLEcOFiOFCxHAhYrgQMVyIGC5EDBcihgsRw4WI4ULEcCFiuBAx3uVuwDGY2XtgCBTAALjc8tEFMAdKYBJC+HOK9nXBm5dwUM7MCmAEXDcMMQVuQwhlV23qC2khZjYAboGrjkLOgFEIYd5RvM6RrSFmdgs80J0MYqyHGFsSuR4S60TJ9vrwCEziZ+YhhGXy/xdU9aWgqjfnW+IsgEKtvkgJiUPUPfUyZsD42DoQ68+Y+p62AG6UhjAZITt6xopq3L9vGf+Gqh6dJX+S6ilKNaRkU8YCGLSVARBjDGLMdS5jbgkkhMQiWyejSGtEG2KsghopKoU++5AV68ZDcrvXYWTH8Pghdz1R6CHpN3MFDPsc02PsYcy1qy0nJ6uQOANKZz+jfcOUmd3H6W1jYo5RcvsqtikbuXtI+kBmBxbwz8DczMZtksdcsz1tOinZhMRxPF2bGh8R4gz4amZLMxu2aEqa8zq2LQs5e0j6EB8bLv6dAz/NrGwyjMWcj3vadjJyCimS60nLeFfAbzO7bfANT3MXLdvSmJxCBsl12VHcL8AyvpkfSpo7bdvJyCkkfQfocv5/Bnw3s/mBs6Y097aFzd7JPcv6T5dv5GtcAr/2TZN7yt0IGSE908k0+RS8FiEvhhd1yKEFUw5YAVBApoe0XQrZwgL4GEIY7pLRU+5G5OwhC57PZgbAsqPYK6rdxUMXC9Npbro8fzJy9pB0qll0FPcOuDhCRl3ubEvwOYWUyXXb5YoZ1X7GqMHSfZq7bNmWxuQUki5XnDdc+n4EPoUQiiabSzFnejKl7TJOY7IJid/iaXJ7fESIFfCNas+9zQNMc05zHnjIPctKx/mrA9egflCJGLd5eDFXukGWdddQYU+95PlDWVE97GXPeS+oivf6saBZCKHoM+8+cvcQ2NyhOwMmfW4SxdgTNs9oZd0tBAEhsRDfJbcvgbIPKTtOnNzlPnECAkPWP8xsTv3ZrJ1v2UfmuKDqGRt5QgjZ9kDWyd5D1iioP1U4P3KzqZYYY5v0om38rpDpIeCHrUFMCPjPEeSE/COetf3SU/i7EEL2GVUdSjXkGfGBfWDzIFsb/q93dRizU2R7yDr+o09R/GfRzsmRrSGvFRcihgsRw4WI4ULEcCFiuBAxXIgYLkQMFyKGCxHDhYjhQsRwIWK4EDFciBguRAwXIoYLEcOFiOFCxHAhYrgQMf4CVuqCm+17t3sAAAAASUVORK5CYII=);
+				background-size: 50px 44px;
+				-ms-touch-action: auto;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav" style="padding-right: 15px;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">异常处理</h1>
+			<span class="mui-pull-right mui-icon mui-icon-home"></span>
+		</header>
+		<div class="mui-content" id="abnormalIndex">
+			<div  class="mui-content-padded">
+				<h4 class="mui-pull-left">初步诊断：</h4>
+				<div class="mui-input-row" style="margin: 10px 5px;">
+					<textarea v-model="formData.CbMemo" rows="5" placeholder=""></textarea>
+				</div>
+				<div v-show="showPicture">
+					<h4 class="mui-pull-left">图片：</h4>
+					<div class="mui-slider">
+					  <div class="mui-slider-group mui-slider-loop" id="topImg">
+							 <!-- <div class="mui-slider-item" ><a href="#"><img v-bind:src="item" /></a></div> -->
+					  </div>
+					</div>
+					<div class="buttonDelete" @click="deletePicture">删除</div>
+				</div>
+				
+				<br/>
+				<br/>
+					<div class="button" @click="getImage">拍照</div>
+					<br/>
+					<!-- History list -->
+					<ul id="history" class="dlist" style="text-align:left;">
+						<li id="empty" class="ditem-empty">无历史记录</li>
+					</ul>
+					<br/>
+					<div class="button button-waring"  @click="cleanHistory">清空历史记录</div>
+					<br/>
+					<button   @click="save" type="primary" class="mui-btn mui-pull-right" style="font-size: 15px;margin: .5em .7em;">
+						保存
+					</button>
+					</div>
+		</div>
+		<script src="../../js/vue/vue.js"></script>
+		<script src="../../js/muiMethods.js"> </script>
+		<script type="text/javascript">
+			var vm=new Vue({ 
+				el:'#abnormalIndex',
+				data:{
+					showPicture:false,pictureIdList:[],//图片--
+					formData:[],rowData:{},userId:'',
+					bUpdated:false,
+					gentry:null,i:1,w:null,hl:null,de:null,ie:null,unv:true
+				},
+				mounted:function() {
+					mui.init({
+						
+					})
+					mui.plusReady(function() {
+						vm.rowData=JSON.parse(localStorage.getItem('rowData'));
+						// var i=1,w=null;// var hl=null,le=null,de=null,ie=null;// var unv=true;//gentry=null,// var bUpdated=false; //用于兼容可能提前注入导致DOM未解析完更新的问题
+						// H5 plus事件处理
+							// 获取摄像头目录对象-->获取本地图片信息
+							plus.io.resolveLocalFileSystemURL('_doc/', function(entry){
+								entry.getDirectory('camera', {create:true}, function(dir){
+									vm.gentry = dir;
+									vm.updateHistory();
+								}, function(e){
+									// outSet('Get directory "camera" failed: '+e.message);
+								} );
+							}, function(e){
+								// outSet('Resolve "_doc/" failed: '+e.message);
+							});
+						
+						if(mui.os.plus){
+						mui.plusReady(function(){
+						// var self = plus.webview.currentWebview();
+						// vm.aeId =self.aeId;
+						// vm.callDate =self.callDate;
+						// vm.recMan=self.recMan
+						
+						vm.getAjaxData(vm.rowData.Aeid);
+						})
+					}else{
+						vm.getAjaxData(vm.rowData.Aeid);
+					}	
+					});
+					// 监听DOMContentLoaded事件
+					document.addEventListener('DOMContentLoaded', function(){
+						// 获取DOM元素对象
+						vm.hl=document.getElementById('history');
+						vm.le=document.getElementById('empty');
+						vm.de=document.getElementById('display');
+						if(vm.ie=document.getElementById('index')){
+							vm.ie.onchange=vm.indexChanged;
+						}
+						// 判断是否支持video标签
+						vm.unv=!document.createElement('video').canPlayType;
+						vm.updateHistory();
+					},false );
+				 },
+				methods:{
+					getAjaxData:function(Aeid){
+						vm.userId=JSON.parse(localStorage.getItem('userInfo')).UserId;
+						vm.cleanHistoryFirst();//处理拍照图片缓存
+					 //-----------表格数据
+					 mui.ajaxRequest('shyh.app/Person/GetTaskInfo?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM&aeid='+Aeid+'',{
+						type: "get",
+						success:function(data){
+							if(JSON.stringify(data.code)==0){
+								vm.formData=data.data;
+								console.log(JSON.stringify(data.data))
+								//加载图片
+								// vm.gentry=null;
+								var upId=data.data.Upids;
+								// var upId=[1,2,3]
+								if(upId.length>0){
+									vm.showPicture=true;
+									for(var i in upId){
+										vm.pictureIdList.push(upId[i])
+									}
+								}
+								// vm.pictureIdList=upId;
+								// vm.pictureIdList=[0,12,3]
+								
+								for(var i in upId){
+									var src=mui.baseUrl+'shyh.app/Goods/DownFile?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM&upid='+upId[i]+'';
+									$('#topImg').append(
+										'<div class="mui-slider-item">'+
+											'<a >'+
+												'<img src="'+src+'">'+
+											'</a>'+
+										'</div>'
+										);
+										// $('.mui-slider-item').on("click", function(data){
+										//     alert(data)
+										// })			
+								}
+								//获得slider插件对象
+								var gallery = mui('.mui-slider');
+								gallery.slider({
+								  interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+								});
+							}
+						},
+						error:function(data){
+							 mui.toast('erro')
+						}
+					 });
+					}, 
+					//删除照片
+					deletePicture:function(){
+						for(var i=0;i<vm.pictureIdList.length;i++){
+							mui.ajaxRequest('shyh.app/Goods/DelFile?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM&upid='+vm.pictureIdList[i],{
+								type: "get",
+								success:function(data){
+									if(JSON.stringify(data.code)==0){
+										 mui.toast('删除成功！');
+										 window.location.reload();
+									}
+								},
+								error:function(data){
+									 mui.toast('删除失败！')
+								}
+							});
+						}
+						
+					},
+					
+					// 拍照
+					getImage:function (){
+						// outSet('开始拍照：');
+						console.log(vm.rowData.Code);console.log(vm.userId);
+						var cmr = plus.camera.getCamera();
+						cmr.captureImage(function(p){
+							// outLine('成功：'+p);  
+							plus.io.resolveLocalFileSystemURL(p, function(entry){
+								vm.createItem(entry);
+								var wt=plus.nativeUI.showWaiting();
+								var task=plus.uploader.createUpload(mui.baseUrl+'shyh.app/Person/UploadFile?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM&Code='+vm.rowData.Code+'&userId='+vm.userId,
+									{method:"post"},
+									function(t,status){console.log(JSON.stringify(t))
+										//上传完成
+										if(status==200){
+											// alert("上传成功："+t.responseText);
+											mui.toast("上传成功!")
+											wt.close(); //关闭等待提示按钮
+										}else{
+											// alert("上传失败："+status);
+											mui.toast("上传失败!")
+											wt.close();//关闭等待提示按钮
+										}
+									}
+								);
+								 task.addFile(entry.toLocalURL(),{key:entry.toLocalURL()});
+								 task.start();
+							}, function(e){
+								// outLine('读取拍照文件错误：'+e.message);
+							});
+						}, function(e){
+							// outLine('失败：'+e.message);
+						}, {filename:'_doc/camera/',index:1});
+						
+					},
+					// 添加播放项
+					createItem:function (entry){
+						var li = document.createElement('li');
+						li.className = 'ditem';
+						li.innerHTML = '<span class="iplay"><font class="aname"></font><br/><font class="ainf"></font></span>';
+						li.setAttribute('onclick', 'vm.displayFile(this)' );
+						vm.hl.insertBefore( li, vm.le.nextSibling );
+						li.querySelector('.aname').innerText = entry.name;
+						li.querySelector('.ainf').innerText = '...';
+						li.entry = entry;
+						vm.updateInformation(li);
+						// 设置空项不可见
+						vm.le.style.display = 'none';
+					},
+					// 获取录音文件信息
+					updateInformation:function (li){
+						if(!li || !li.entry){
+							return;
+						}
+						var entry = li.entry;
+						entry.getMetadata(function(metadata){
+							li.querySelector('.ainf').innerText = dateToStr(metadata.modificationTime);
+						}, function(e){
+							// outLine('获取文件"'+entry.name+'"信息失败：'+e.message);
+						} );
+					},
+					// 获取录音历史列表
+					updateHistory:function (){
+						if(vm.bUpdated||!vm.gentry||!document.body){//兼容可能提前注入导致DOM未解析完更新的问题
+							return;
+						}
+						// for(var i in vm.gentry){
+						// 	console.log(vm.gentry[i])
+						// }
+					  	var reader = vm.gentry.createReader();
+					  	reader.readEntries(function(entries){
+					  		for(var i in entries){
+					  			if(entries[i].isFile){
+					  				vm.createItem(entries[i]);
+					  			}
+					  		}
+					  	}, function(e){
+					  		// outLine('读取录音列表失败：'+e.message);
+					  	});
+					  	vm.bUpdated = true;
+					},
+					indexChanged:function (){
+						vm.de.innerText = vm.ie.options[vm.ie.selectedIndex].innerText;
+						vm.i = parseInt(vm.ie.value);
+						// outLine(vm.de.innerText);
+					},
+					// 显示文件
+					displayFile:function (li){
+						if(vm.w){
+							// outLine('重复点击！');
+							return;
+						}
+						if(!li || !li.entry){
+							ouSet('无效的媒体文件');
+							return;
+						}
+						var name = li.entry.name;
+						var suffix = name.substr(name.lastIndexOf('.'));
+						var url = '';
+						if(suffix=='.mov' || suffix=='.3gp' || suffix=='.mp4' || suffix=='.avi'){
+							//if(unv){plus.runtime.openFile('_doc/camera/'+name);return;}
+							url = '/plus/camera_video.html';
+						} else {
+							url = '/plus/camera_image.html';
+						}
+						vm.w=plus.webview.create(url,url,{hardwareAccelerated:true,scrollIndicator:'none',scalable:true,bounce:'all'});
+						vm.w.addEventListener('loaded', function(){
+							vm.w.evalJS('loadMedia("'+li.entry.toLocalURL()+'")');
+							//w.evalJS('loadMedia("'+'http://localhost:13131/_doc/camera/'+name+'")');
+						}, false );
+						vm.w.addEventListener('close', function(){
+							vm.w = null;
+						}, false);
+						vm.w.show('pop-in');
+					},
+					// 清除历史记录
+					cleanHistoryFirst:function (){
+						vm.hl.innerHTML = '<li id="empty" class="ditem-empty">无历史记录</li>';
+						vm.le = document.getElementById('empty');
+						// 删除音频文件
+						// outSet('清空拍照录像历史记录：');
+						vm.gentry.removeRecursively(function(){
+							// Success
+							// outLine('成功！');
+						}, function(e){
+							// outLine('失败：'+e.message);
+						});
+					},
+					// 清除历史记录
+					cleanHistory:function (){
+						vm.hl.innerHTML = '<li id="empty" class="ditem-empty">无历史记录</li>';
+						vm.le = document.getElementById('empty');
+						// 删除音频文件
+						// outSet('清空拍照录像历史记录：');
+						vm.gentry.removeRecursively(function(){
+							// Success
+							// outLine('成功！');
+						}, function(e){
+							// outLine('失败：'+e.message);
+						});
+						
+					},
+					save:function(){
+						vm.userId=JSON.parse(localStorage.getItem('userInfo')).UserId;
+						 mui.ajaxRequest('shyh.app/Person/DealTask?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM&aeid='+vm.rowData.Aeid+'&recMan='+vm.userId+'&recTime='+vm.rowData.CallDate+'&memo='+vm.formData.CbMemo+'&recManUserName='+vm.rowData.CallMan+'',{
+							type: "Post",
+							success:function(data){
+								if(data.code==-1){
+									mui.toast('参数错误！');
+								}else{
+									mui.toast('提交成功');
+									mui.back();
+								}
+							}, 
+							error:function(xhr){
+								 // mui.toast(JSON.stringify(JSON.parse(xhr.response).message),{ duration:'long'});
+							}
+						 });
+					}
+				}
+			})
+			
+		// if(window.plus){
+		// 	plusReady();
+		// }else{
+		// 	document.addEventListener('plusready', plusReady, false);
+		// }
+		</script>
+	</body>
+	
+</html>

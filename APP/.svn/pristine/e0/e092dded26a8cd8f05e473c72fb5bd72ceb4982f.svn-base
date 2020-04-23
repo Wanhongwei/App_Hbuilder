@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style>
+			.mui-off-canvas-right {
+				color: #fff;
+			}
+			.title {
+				margin: 35px 15px 10px;
+			}
+			.title+.content {
+				margin: 10px 15px 35px;
+				color: #bbb;
+				text-indent: 1em;
+				font-size: 14px;
+				line-height: 24px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!--侧滑菜单容器-->
+		<div id="main" class="mui-off-canvas-wrap">
+			<!--菜单部分-->
+			<aside id="offCanvasSide" class="mui-off-canvas-right">
+				<div id="offCanvasSideScroll" class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<div class="title" style="margin-bottom: 25px;">功能</div>
+						<ul class="mui-table-view mui-table-view-chevron mui-table-view-inverted">
+							<li class="mui-table-view-cell">
+								<a class="" id="mainHtml">
+									显示主页
+								</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a class="" id="logout">
+									注销
+								</a>
+							</li>
+						</ul>
+						<div class="content">
+							<p style="margin: 10px 15px;">
+								<button id="offCanvasHide" type="button" class="mui-btn mui-btn-danger mui-btn-block" style="padding: 5px 20px;">关闭侧滑菜单</button>
+							</p>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<div class="mui-inner-wrap">
+				<header class="mui-bar mui-bar-nav">
+					<h1 class="mui-title" id="offCanvasShow">左滑导航</h1>
+				</header>
+				<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<div class="mui-content-padded">
+						</div>
+					</div>
+				</div>
+				<!-- off-canvas backdrop -->
+				<div class="mui-off-canvas-backdrop"></div>
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script>
+			mui.init({
+				swipeBack: false,
+			});
+			 //侧滑容器父节点
+			var main = mui('#main');
+			 //主界面容器
+			// var offCanvasInner = main[0].querySelector('.mui-inner-wrap');
+			 //菜单容器
+			var offCanvasSide = document.getElementById("offCanvasSide");
+			 //Android暂不支持整体移动动画
+			 //移动效果是否为整体移动
+			var moveTogether = false;
+			 //侧滑容器的class列表，增加.mui-slide-in即可实现菜单移动、主界面不动的效果；
+			var classList = main[0].classList;
+			offCanvasSide.classList.remove('mui-transitioning');
+			offCanvasSide.setAttribute('style', '');
+			classList.add('mui-scalable');
+			main.offCanvas().refresh();
+			 //变换侧滑动画移动效果；
+			 document.getElementById('offCanvasShow').addEventListener('tap', function() {
+			 	main.offCanvas('close');
+			 });
+			document.getElementById('offCanvasHide').addEventListener('tap', function() {
+				main.offCanvas('close');
+			});
+			 //主界面和侧滑菜单界面均支持区域滚动；
+			mui('#offCanvasSideScroll').scroll();
+			mui('#offCanvasContentScroll').scroll();
+			 //实现ios平台的侧滑关闭页面；
+			if (mui.os.plus && mui.os.ios) {
+				main[0].addEventListener('shown', function(e) { //菜单显示完成事件
+					plus.webview.currentWebview().setStyle({
+						'popGesture': 'none'
+					});
+				});
+				main[0].addEventListener('hidden', function(e) { //菜单关闭完成事件
+					plus.webview.currentWebview().setStyle({
+						'popGesture': 'close'
+					});
+				});
+			};
+			document.getElementById('logout').addEventListener('tap', function() {
+				mui.openWindow({
+					url: '../../login.html',
+					id: 'login',
+					createNew:true
+				});
+			});
+			document.getElementById('mainHtml').addEventListener('tap', function() {
+				mui.openWindow({
+					url: '../../main.html',
+					id: 'main',
+					createNew:true
+				});
+			});
+		</script>
+	</body>
+
+</html>

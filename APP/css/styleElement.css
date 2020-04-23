@@ -1,0 +1,324 @@
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  font-size: 12px !important;
+  /* font-family: "Microsoft YaHei"; */
+  font-family: "Arial";
+  text-decoration: none;
+  list-style: none;
+}
+
+a {
+  color: #000;
+}
+
+table > * {
+  text-align: left;
+}
+
+/*头部*/
+.home_header {
+  /* background-color: #004ea2; */
+  /* background-color: #323638; */
+  background-color: #1b1b1b;
+  line-height: 60px;
+  z-index: 2;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.15);
+  -webkit-box-shadow: 0 1px 4px rgba(0, 21, 41, 0.15);
+  -moz-box-shadow: 0 1px 4px rgba(0, 21, 41, 0.15);
+  -ms-box-shadow: 0 1px 4px rgba(0, 21, 41, 0.15);
+  -o-box-shadow: 0 1px 4px rgba(0, 21, 41, 0.15);
+}
+
+.logo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  /* background-color: #004ea2; */
+  background-color: #323638;
+  z-index: 2;
+}
+
+
+.logo_img {
+  height: 60px;
+  width: 250px;
+  float: left;
+  /* margin: 20px 15px; */
+}
+
+.changeIcon {
+  color: #fff;
+  float: left;
+  line-height: 60px;
+  font-size: 19px !important;
+}
+
+.userSetting {
+  float: right;
+  margin-right: 120px;
+}
+
+.userName, .use_dropdown {
+  color: #fff;
+  font-size: 14px;
+}
+
+/*左侧菜单*/
+.el-aside {
+  box-sizing: border-box;
+  /* background: #3F4457; */
+  padding-top: 60px;
+  /* box-shadow: 2px 0 6px rgba(0, 21, 41, .35); */
+}
+
+.el-submenu__title {
+  text-align: left;
+}
+
+.el-aside .el-icon-menu {
+  line-height: 60px;
+  font-size: 20px;
+  color: white;
+}
+
+.el-menu {
+  box-sizing: border-box;
+  border: none;
+  height: 100%;
+}
+
+.el-submenu .el-menu-item {
+  /* background-color: #323638 !important; */
+}
+.el-submenu__title{
+  height:35px;
+  line-height: 35px;
+}
+.el-menu-item-group__title{
+  padding-top:0;
+  padding-bottom: 0;
+}
+.el-menu .el-submenu .el-menu-item{
+  height: 25px!important;
+  line-height: 25px!important;
+}
+
+.el-dropdown-menu {
+  margin-top: 0 !important;
+}
+
+/*!*隐藏滚动条*!*/
+/*::-webkit-scrollbar {*/
+  /*width: 0px;*/
+  /*height: 1px;*/
+/*}*/
+
+/*!*隐藏滚动条*!*/
+/*::-webkit-scrollbar-thumb {*/
+  /*border-radius: 5px;*/
+  /*-webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);*/
+  /*background: rgba(0, 0, 0, 0.2);*/
+/*}*/
+
+.scrollbar {
+  width: 30px;
+  height: 200px;
+  margin: 0 auto;
+
+}
+
+::-webkit-scrollbar { /*滚动条整体样式*/
+  width: 10px; /*高宽分别对应横竖滚动条的尺寸*/
+  height: 16px;
+}
+
+::-webkit-scrollbar-thumb { /*滚动条里面小方块*/
+  /* border-radius: 10px; */
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: #CDCDCD;
+}
+
+::-webkit-scrollbar-track { /*滚动条里面轨道*/
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  /* border-radius: 10px; */
+  background: #F0F0F0;
+}
+
+
+/*主体显示部分*/
+.main_container {
+  width: 100%;
+  height: 100%;
+}
+
+.el-main {
+  /* background-color: rgb(245, 246, 246);*/
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  position: relative;
+}
+
+.container_box {
+  /* background: blue; */
+  width: 100%;
+  height: 100%;
+}
+
+.VMBI_CONTAINER_BOX {
+  /* background: blue; */
+  width: 100%;
+  height: 100%;
+}
+
+.VMBI_CONTAINER_BOX .VMBI_CONTAINER_HEADER {
+  height: 30px !important;
+  padding: 0 !important;
+}
+
+/*按钮部分*/
+.VMBI_COMMON_BUTTON {
+  width: 100%;
+  height: 30px;
+  padding: 10px 0 5px 0;
+}
+
+.VMBI_COMMON_BUTTON > ul > li {
+  float: left;
+  /* margin-left: 20px; */
+}
+
+/* Table*/
+.VMBI_COMMON_TABLE {
+  width: 95%;
+  padding-top: 20px;
+  position: relative;
+  margin: 0 auto;
+}
+
+.VMBI_COMMON_TABLE_LEFT .el-tree {
+  border: 0;
+}
+
+.VMBI_COMMON_TABLE_CONTENT {
+  width: 100%;
+  padding: 10px;
+}
+
+.VMBI_COMMON_TABLE,
+.VMBI_COMMON_TABLE_RIGHT,
+.VMBI_COMMON_TABLE_CONTENT {
+  height: auto;
+}
+
+.VMBI_COMMON_TABLE_LEFT {
+  float: left;
+  width: 200px;
+  height: 100%;
+  padding: 0 5px;
+  z-index: 10;
+  overflow-y: scroll;
+}
+
+.VMBI_COMMON_TABLE_LEFT > div:nth-child(1),
+.VMBI_COMMON_TABLE_CONTENT > div:nth-child(1),
+.VMBI_COMMON_TABLE_RIGHT > div:nth-child(1) {
+  height: 30px;
+  width: 100%;
+  font-size: 14px;
+  border-bottom: 1px solid #e8e8e8;
+  font-weight: 700;
+  text-align: left;
+}
+
+.VMBI_COMMON_TABLE_RIGHT {
+  width: 100%;
+  float: left;
+  right: 0;
+  padding: 10px 5px;
+  z-index: 5;
+}
+
+.VMBI_COMMON_TABLE_RIGHT {
+  width: 75%;
+  padding: 0 5px;
+  float: left;
+}
+
+/*面包屑*/
+.el-breadcrumb {
+  position: fixed;
+  top: 60px;
+  z-index: 4;
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  padding-left: 40px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.15);
+  -webkit-box-shadow: 0 1px 4px rgba(0, 21, 41, 0.15);
+  -moz-box-shadow: 0 1px 4px rgba(0, 21, 41, 0.15);
+  -ms-box-shadow: 0 1px 4px rgba(0, 21, 41, 0.15);
+  -o-box-shadow: 0 1px 4px rgba(0, 21, 41, 0.15);
+}
+
+/*分页*/
+.footerPage {
+  position: fixed;
+  bottom: 0;
+  z-index: 4;
+  width: 100%;
+  height: 34px !important;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.15);
+  -webkit-box-shadow: 0 1px 4px rgba(0, 21, 41, 0.15);
+  -moz-box-shadow: 0 1px 4px rgba(0, 21, 41, 0.15);
+  -ms-box-shadow: 0 1px 4px rgba(0, 21, 41, 0.15);
+  -o-box-shadow: 0 1px 4px rgba(0, 21, 41, 0.15);
+}
+
+.btn-prev, .el-pager li, .btn-next {
+  background: #fff !important;
+}
+
+.el-footer {
+  background-color: #fff;
+}
+
+.el-footer i {
+  color: #000;
+}
+
+/* 模态框 */
+.el-dialog__header span {
+  float: left;
+  font-weight: bold;
+}
+
+.messageWarning > * {
+  font-size: 18px !important;
+}
+
+.el-table   .warning-row{
+  background: #E6A23C;
+}
+
+
+.redItem .el-form-item__label{
+  color:black;
+  font-weight: bolder;
+}
+
+.el-select-dropdown  .el-select-dropdown__wrap{
+  max-width: 260px;
+}
+.el-select__tags {
+  max-height: 35px;
+}

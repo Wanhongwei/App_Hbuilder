@@ -1,0 +1,181 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../../js/element/index.css"/>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav" style="padding-right: 15px;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">点检详情</h1>
+			<span class="mui-pull-right mui-icon mui-icon-home"></span>
+		</header>
+		<div class="mui-content" id="detailInspection">
+			<div  class="mui-content-padded">
+				<el-table
+				  :data="tableData" stripe
+				  border
+				  style="width:100%" >
+				  <el-table-column
+				    label="NO"
+				    width="50"
+				    fixed="left"
+				    align="center">
+				    <template slot-scope="scope">
+				      {{scope.$index+1}}
+				    </template>
+				  </el-table-column>
+			   <el-table-column label="点检结果" width="90" align="center">
+					<template slot-scope="scope">
+					   <el-tooltip class="item" effect="dark" content="点击编辑结果" placement="right-start">
+						  <el-button size="small" :type="trsultType(scope.row.result)" @click="updateResult(scope.$index, scope.row)">{{scope.row.result==='OK'?'OK':scope.row.result==='NG'?'NG':'NONE'}}</el-button>
+					   </el-tooltip>
+					</template>
+				</el-table-column>
+				  <el-table-column
+					label="点检项目"
+					align="center"
+					prop="CheckItem">
+				  </el-table-column>
+			
+				  <el-table-column
+					label="点检标准"
+					align="center"
+					prop="EqLevel">
+				  </el-table-column>
+				</el-table>
+				<div style="text-align: right;margin: 10px;">
+					<el-button type="primary" round @click="save">提交</el-button>
+				</div>
+				 
+			</div>
+		</div>
+	</body>
+	<script src="../../../js/vue/vue.js"></script>
+	<script src="../../../js/mui.min.js"></script>
+	<script src="../../../js/element/index.js"></script>
+	<script src="../../../js/muiMethods.js"> </script>
+	<script type="text/javascript">
+		 (function($, doc) {
+			  var vm=new Vue({ 
+				  el:'#detailInspection',
+				  data:{
+					  templateSelection:'',EciIds:'',
+					  percentage:0,
+					  tableData:[],
+				  },
+				  mounted:function() {
+					  mui.init({
+					  	swipeBack:true, //启用右滑关闭功能
+						beforeback: function(){
+								//获得列表界面的webview
+								var list = plus.webview.currentWebview().opener();
+								//触发列表界面的自定义事件（refresh）,从而进行数据刷新
+								mui.fire(list,'refresh');
+								//返回true，继续页面关闭逻辑
+								return true;
+							}
+					  });
+					  mui.plusReady(function() {
+						   window.addEventListener('refresh', function(e){//执行刷新
+							   vm.getAjaxData();
+						   });
+					 vm.getAjaxData();
+					  });
+					 },
+					 methods:{
+						 getAjaxData:function(){
+							 var encid=localStorage.getItem('encid');
+							 //-----------表格数据
+							 $.ajaxRequest('shyh.app/Equ/GetCheckInfo?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM&encid='+encid+'',{
+								type: "get",
+								success:function(data){
+									vm.tableData=data.data.details;
+									for(var i=0;i<vm.tableData.length;i++){
+										vm.tableData[i].result='';
+									}
+								}, 
+								error:function(data){
+									 mui.toast('erro')
+								}
+							 });
+						 },
+						 trsultType:function(data){
+						   var resultType=(data==='OK')?'success':(data==='NG')?'danger':'';
+						   return resultType;
+						 },
+						 updateResult:function(index,row){
+							 /* 
+							  1.页面结果显示；
+							  2.最后提交内容显示；EciIds=65:10, 点检项
+							  */
+							 var oldData=vm.tableData;
+							 vm.tableData=[];
+							//改变点检结果后返回,重新显示页面;
+							if(row.result==''){
+								oldData[index].result='OK';
+								vm.percentage+=10;
+							}else if(row.result=='OK'){
+								oldData[index].result='NG';
+							}else if(row.result=='NG'){
+								oldData[index].result='';
+							};
+							for(var i=0;i<oldData.length;i++){
+								vm.tableData.push(oldData[i]);
+							};
+						 },
+						 save:function(){
+							 var send=true;
+							 for(var i=0;i<vm.tableData.length;i++){
+								 if(vm.tableData[i].result==''){
+									 var row=i+1;
+									 mui.toast('第'+row+'行,点检结果不能为空！');
+									 send=false;
+									 return;
+								 }
+							 };
+							 if(send){
+								 vm.EciIds=[];
+								 for(var i=0;i<vm.tableData.length;i++){
+								 	/* 	2.最后提交内容显示；EciIds=65:10, 点检项 */
+								 	vm.EciIds+=vm.tableData[i].EciId+':'+vm.tableData[i].result+',';
+								 };
+								 vm.saveData();
+							 }
+						 },
+						 back:function(){
+							 mui.back; 
+						 },
+						 saveData:function(){
+							 var encid=localStorage.getItem('encid');
+							 var userId=JSON.parse(localStorage.getItem('userInfo')).UserId;
+							 $.ajaxRequest('shyh.app/Equ/Check?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM',{
+									type: "Post",
+									data:{
+										Encid:encid,EciIds:vm.EciIds,curManId:userId
+									},
+									success:function(data){
+										if(data.code==0){
+											 mui.toast('提交成功！');
+											 mui.openWindow({
+											 	url: './index.html',
+											 	id: 'inspectionIndex',
+											 	createNew:true
+											 });
+											
+										}
+									}, 
+									error:function(data){
+										 mui.toast('erro');
+									}
+							 });
+						 }
+					}
+				  })
+			 }(mui, document));
+	</script>
+</html>

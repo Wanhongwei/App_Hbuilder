@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../../js/element/index.css"/>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav" style="padding-right: 15px;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">质量类</h1>
+			<!-- <span class="mui-pull-right mui-icon mui-icon-home"></span> -->
+		</header>
+		<div class="mui-content" id="qualityAb">
+			<div  class="mui-content-padded">
+				<el-table
+				  :data="tableData" stripe
+				  border
+				  style="width:100%">
+				  <el-table-column
+					label="序号"
+					type="index"
+					align="center" width="50"
+					show-overflow-tooltip
+					>
+				  </el-table-column>
+				  <el-table-column
+					label="单号"
+					prop="Code"
+					align="center" width="100"
+					show-overflow-tooltip
+					>
+				  </el-table-column>
+				  <el-table-column
+					label="触发事件"
+					align="center"
+					prop="Msg">
+				  </el-table-column>
+			
+				  <el-table-column
+					label="呼叫人"
+					align="center"
+					show-overflow-tooltip
+					prop="CallMan">
+				  </el-table-column>
+				  <el-table-column
+					label="呼叫时间"
+					align="center"
+					prop="CallDate" width="100" >
+					</el-table-column>
+					<el-table-column
+					  label="操作" align="center" width="100" fixed="right">
+					  <template slot-scope="scope">
+					    <el-button type="text" size="mini" @click="abnormal(scope.row)">处理</el-button>
+					    <el-button type="text" style="color:red"  size="mini" @click="closeed(scope.row.Aeid)">闭合</el-button>
+					  </template>
+					</el-table-column>
+				</el-table>
+			</div>
+		</div>
+	</body>
+	<script src="../../../js/vue/vue.js"></script>
+	<script src="../../../js/mui.min.js"></script>
+	<script src="../../../js/element/index.js"></script>
+	<script src="../../../js/muiMethods.js"> </script>
+	<script type="text/javascript">
+		 (function($, doc) {
+			  var vm=new Vue({ 
+				  el:'#qualityAb',
+				  data:{
+					tableData:[]
+				  },
+				  mounted:function() {
+					  mui.init({
+					  	swipeBack:true, //启用右滑关闭功能
+					  });
+					  mui.plusReady(function() {
+						   window.addEventListener('refresh', function(e){//执行刷新
+							   vm.getAjaxData();
+						   });
+					 vm.getAjaxData();
+					  });
+					 },
+					 methods:{
+						 getAjaxData:function(){
+							 var UserCode=localStorage.getItem('userCode');
+							 //-----------表格数据
+							 $.ajaxRequest('shyh.app/Check/LoadData?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM&userCode='+UserCode+'',{
+								type: "get",
+								success:function(data){
+									vm.tableData=data.data;
+								}, 
+								error:function(data){
+									 mui.toast('erro')
+								}
+							 });
+						 },
+						 abnormal: function(rowData) {
+							 // localStorage.setItem 只能存储字符串，
+							 // 所以在储存的时候先将对象转换为字符串 
+							 localStorage.setItem('rowData', JSON.stringify(rowData));
+							mui.openWindow({
+								url: './abnormal.html',
+								id: 'abnormalQua',
+								extras: {
+									// aeId: rowData.Aeid,
+									// callDate:rowData.CallDate,
+									// recMan:rowData.CallMan
+								}
+							});
+							if(!mui.os.plus){
+								localStorage.setItem('aeId',JSON.stringify(aeId));
+							}
+						 },
+						 closeed:function(id){
+							 var btnArray = ['否', '是'];
+							 mui.confirm('闭合后将不能修改！', '确认闭合吗？', btnArray, function(e) {
+								 if (e.index == 1) {
+									 mui.toast(id)
+									 $.ajaxRequest('shyh.app/Check/CloseTask?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM&aeid='+id+'',{
+										type: "get",
+										success:function(data){
+											vm.getAjaxData();
+										}, 
+										error:function(data){
+											 mui.toast('erro')
+										}
+									 });
+								 } else {
+									 
+								 }
+							 })
+						 }
+						 
+						 }
+				  })
+			 }(mui, document));
+	</script>
+</html>

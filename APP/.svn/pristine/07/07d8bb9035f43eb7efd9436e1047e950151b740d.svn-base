@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../../js/element/index.css"/>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav" style="padding-right: 15px;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">过程检</h1>
+			<span class="mui-pull-right mui-icon mui-icon-home"></span>
+		</header>
+		<div class="mui-content" id="processinspect">
+			<div  class="mui-content-padded">
+				<el-table
+				  :data="tableData" stripe
+				  border
+				  style="width:100%">
+				  <el-table-column
+					label="序号"
+					type="index"
+					align="center" width="50"
+					show-overflow-tooltip
+					>
+				  </el-table-column>
+				  <el-table-column
+					label="送检单号"
+					prop="Code"
+					align="center" width="110"
+					show-overflow-tooltip
+					>
+				  </el-table-column>
+				  <el-table-column
+					label="设备"
+					align="center"
+					prop="Ename" width="160">
+				  </el-table-column>
+			
+				  <el-table-column
+					label="零件名称"
+					align="center"
+					width="110"
+					prop="Pname">
+				  </el-table-column>
+				  <el-table-column
+					label="送检时间"
+					align="center"
+					prop="SjTime" width="100" >
+					</el-table-column>
+					<el-table-column
+					prop="OperatorMan"
+					  label="操作工" align="center" width="100" >
+					</el-table-column>
+				</el-table>
+				<el-pagination background small
+				      @size-change="onSizeChange"
+				      @current-change="onCurrentChange"
+				      :current-page="pageNumber"
+				      :page-sizes="[10,20,30,40]"
+				      layout="total,  prev, pager,next,sizes"
+				      :total="totalSize">
+				    </el-pagination>
+			</div>
+		</div>
+	</body>
+	<script src="../../../js/vue/vue.js"></script>
+	<script src="../../../js/mui.min.js"></script>
+	<script src="../../../js/element/index.js"></script>
+	<script src="../../../js/muiMethods.js"> </script>
+	<script type="text/javascript">
+		 (function($, doc) {
+		  var vm=new Vue({ 
+			  el:'#processinspect',
+			  data:{
+				tableData:[],
+				pageNumber: 1, //当前页数
+				pageSize: 10,
+				totalSize: 0,
+			  },
+			  mounted:function() {
+				  mui.plusReady(function() {
+					   window.addEventListener('refresh', function(e){//执行刷新
+						   vm.getAjaxData();
+					   });
+				 vm.getAjaxData();
+				  });
+				 },
+				 methods:{
+					 getAjaxData:function(){
+						 var UserCode=localStorage.getItem('userCode');
+						 //-----------表格数据
+						 $.ajaxRequest('shyh.app/Check/GetGcInfo?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM&userCode=00&curPage='+vm.pageNumber+'&pageSize='+vm.pageSize+'',{
+							type: "get",
+							success:function(data){
+								vm.tableData=data.data.Details;
+								vm.totalSize=data.data.TotalCount;
+							}, 
+							error:function(data){
+								console.log(JSON.stringify(data))
+								 mui.toast('erro')
+							}
+						 });
+					 },
+						onSizeChange:function(val) {
+						 vm.pageSize = val;
+						 vm.getAjaxData();
+					 },
+					    onCurrentChange:function(val) {
+							vm.pageNumber = val;
+							vm.getAjaxData();
+					 }
+					 },
+			  })
+			 }(mui, document));
+	</script>
+</html>

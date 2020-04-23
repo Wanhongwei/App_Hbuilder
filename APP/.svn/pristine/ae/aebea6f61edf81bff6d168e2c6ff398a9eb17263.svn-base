@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../../js/element/index.css"/>
+		
+		<style>
+			.mui-middle{
+				 display:list-item;
+				  text-align:center;
+			}
+			.el-form-item {
+			    margin-bottom: 20px;
+			}
+			.el-input {
+			    position: relative;
+			    font-size: 14px;
+			    display: inline-block;
+			    width: 80%;
+			}
+			.el-textarea__inner {
+			    display: block;
+			    resize: vertical;
+			    padding: 5px 15px;
+			    line-height: 1.5;
+			    -webkit-box-sizing: border-box;
+			    box-sizing: border-box;
+			    width: 80%;
+			    font-size: inherit;
+			    color: #606266;
+			    background-color: #FFF;
+			    background-image: none;
+			    border: 1px solid #DCDFE6;
+			    border-radius: 4px;
+			    -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+			    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="padding-right: 15px;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">设备维修</h1>
+			<span class="mui-pull-right mui-icon mui-icon-home"></span>
+		</header>
+		<div class="mui-content" id="repairIndex">
+			<div class="mui-content-padded">
+				<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="70px" class="demo-ruleForm">
+				  <el-form-item label="设备:"  >
+				    <el-input v-model="ruleForm.Ename"></el-input>
+				  </el-form-item>
+				  <el-form-item label="原因:" >
+				    <el-input v-model="ruleForm.Msg"></el-input>
+				  </el-form-item>
+				  <el-form-item label="日期:" >
+				    <el-date-picker value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间" label="日期:" type="datetime" v-model="ruleForm.daalTime">
+				    </el-date-picker>
+				  </el-form-item>
+				  <el-form-item label="诊断:" prop="idea">
+				    <el-input type="textarea" v-model="ruleForm.idea"></el-input>
+				  </el-form-item>
+				  <el-form-item label="结果:" prop="result">
+					   <el-select v-model="ruleForm.result" placeholder="请选择活动区域">
+					        <el-option label="OK" value="OK"></el-option>
+					        <el-option label="NO" value="NO"></el-option>
+					   </el-select>
+				  </el-form-item>
+				  <el-form-item label="备件:" prop="MspIds">
+				    <!-- <el-input v-model="ruleForm.MspIds"></el-input> -->
+					<el-badge :value="ruleForm.SelecteEquPars.length" class="item" type="primary">
+					  <el-button  @click="dialogFormVisible = true" size="small">查看备件</el-button>
+					</el-badge>
+				  </el-form-item>
+				  <el-form-item>
+				    <el-button style="float: right;" type="primary" @click="submitForm('ruleForm')">保存</el-button>
+				  </el-form-item>
+				</el-form>
+			</div>
+			<el-dialog width="90%" title="设备详情" center :visible.sync="dialogFormVisible">
+			  <el-form :model="form">
+			    <el-form-item label="活动名称" :label-width="formLabelWidth">
+			      <el-input v-model="form.name" autocomplete="off"></el-input>
+			    </el-form-item>
+			    <el-form-item label="活动区域" :label-width="formLabelWidth">
+			      <el-select v-model="form.region" placeholder="请选择活动区域">
+			        <el-option label="区域一" value="shanghai"></el-option>
+			        <el-option label="区域二" value="beijing"></el-option>
+			      </el-select>
+			    </el-form-item>
+			  </el-form>
+			  <div slot="footer" class="dialog-footer">
+			    <el-button @click="dialogFormVisible = false">取 消</el-button>
+			    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+			  </div>
+			</el-dialog>
+		</div>
+	</body>
+	<script src="../../../js/vue/vue.js"></script>
+	<script src="../../../js/mui.min.js"></script>
+	<script src="../../../js/element/index.js"></script>
+	<script src="../../../js/muiMethods.js"> </script>
+		<script type="text/javascript">
+			 var vm=new Vue({ 
+				 el:'#repairIndex',
+				 data:{
+					 //弹出框定义
+					formLabelWidth:'120px',
+					dialogFormVisible:false,
+					form: {name: '',region: ''},
+					rowData:'',
+				 	ruleForm:{Ename:'',Msg:'',daalTime:'',idea:'',result:'OK',MspIds:'',SelecteEquPars:[],AllSelectEquPars:[]},
+					rules:{  
+						idea: [
+						{ required: true, message: '请输入诊断信息', trigger: 'blur' },
+						{ min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+					  ]}
+				 },
+				 mounted:function() {
+					 mui.init();
+					   mui.plusReady(function() {
+						   vm.getRepairData();
+					})
+				},
+				methods:{
+				 getRepairData:function(){
+					 vm.rowData=localStorage.getItem('rowDatarepair');
+					 var aeid=JSON.parse(vm.rowData).Aeid;
+					 mui.ajaxRequest('shyh.app/Equ/GetTaskInfo?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM&aeid='+aeid,{
+						type: "Get",
+						success:function(data){
+							vm.ruleForm=data.data;
+							vm.ruleForm.result='OK';
+							// console.log(JSON.stringify(vm.ruleForm))
+							vm.SelecteEquPars=data.data.SelecteEquPars;
+							
+						}, 
+						error:function(xhr){
+							mui.toast(JSON.stringify(JSON.parse(xhr.response).message),{ duration:'long'});
+							// console.log(JSON.stringify(JSON.parse(xhr.response).message))
+							 // console.log(JSON.parse(JSON.stringify(xhr.response)).get('code'))
+						}
+					 });
+				 },
+				 submitForm:function(formName) {
+						vm.$refs[formName].validate(function(valid) {
+						  if (valid) {
+							alert('submit!');
+							console.log(JSON.stringify(vm.ruleForm))
+						  } else {
+							console.log('error submit!!');
+							return false;
+						  }
+						});
+					  },
+				}	
+			})
+		</script>
+</html>

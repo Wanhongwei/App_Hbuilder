@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.css" rel="stylesheet" />
+		<link href="../../../css/mui.min.css" rel="stylesheet" />
+		<script src="../../../js/mui.min.js"></script>
+		<style>
+			/**
+			 * 表格
+			 */
+			.table {
+				padding: 0;
+				border: 1px solid #CCCCCC;
+				color: #6D6D72;
+				width: 100%;
+				font-size: 10px;
+				overflow-y: auto;
+				_overflow: auto;
+				word-break: break-all;
+				word-wrap: break-word;
+			}
+			.table th {
+				background-repeat: repeat-x;
+			}
+				 
+			.table td,
+			.table th {
+				border: 1px solid #CCCCCC;
+				text-align: center;
+				word-break: break-all;
+				width: 25%;
+			}
+				 
+			.table tr.alter {
+				background-color: #CCCCCc;
+			}
+		</style>
+	</head>
+
+	<body>
+		
+		<header class="mui-bar mui-bar-nav" style="padding-right: 15px;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">设备故障记录</h1>
+			<span class="mui-pull-right mui-icon mui-icon-home"></span>
+		</header>
+		<div class="mui-content">
+			<div  class="mui-content-padded">
+				<table class="table" style='border:0px; LINE-HEIGHT: 30px;  '>
+							<thead>
+								<th>工作中心</th>
+								<th>设备</th>
+								<th>触发人</th>
+								<th>操作</th>
+							</thead>
+							<tbody>
+								<tr>
+									<td>001</td>
+									<td>001</td>
+									<td>001</td>
+									<td><a href="repair.html">维修</a>  &nbsp; &nbsp;<a>闭合</a></td>
+								</tr>
+							</tbody>
+						</table>
+			</div>
+		</div>
+		<script type="text/javascript">
+			mui.init()
+		</script>
+	</body>
+
+</html>

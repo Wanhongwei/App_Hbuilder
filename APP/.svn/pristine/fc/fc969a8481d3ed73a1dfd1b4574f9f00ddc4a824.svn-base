@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.css" rel="stylesheet" />
+		<link href="../../../css/mui.min.css" rel="stylesheet" />
+		<script src="../../../js/mui.min.js"></script>
+		<style>
+			.mui-middle{
+				 display:list-item;
+				  text-align:center;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="padding-right: 15px;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">设备维修</h1>
+			<span class="mui-pull-right mui-icon mui-icon-home"></span>
+		</header>
+		<div class="mui-content">
+			<div class="mui-content-padded">
+				<div class="mui-middle">
+					<div class="mui-input-row" >
+							<label>设备：</label>
+							<input type="text" value="拉完机器1" disabled="disabled">
+						</div>
+						<div class="mui-input-row">
+							<label>原因：</label>
+							<input type="text" value="xxxy原因1" disabled="disabled">
+						</div>
+						<div class="mui-input-row">
+							<label>日期：</label>
+							<input type="text" value="xxxy原因1" disabled="disabled">
+						</div>
+					<div class="mui-input-row" style="margin: 10px 5px;">
+						<label>诊断：</label>
+						<textarea id="textarea" rows="4" placeholder="多行文本框"></textarea>
+					</div>
+					<div class="mui-input-row" style="margin: 10px 5px;">
+						<label>结果：</label>
+						<select class="mui-btn-block">
+							<option value="item-1">item-1</option>
+							<option value="item-2">item-2</option>
+						</select>
+					</div>
+					<div class="mui-input-row" style="margin: 10px 5px;">
+						<label>备注：</label>
+						<textarea id="remark" rows="4" placeholder="多行文本框"></textarea>
+					</div>
+					<div class="mui-input-row" style="margin: 10px 5px;text-align: center;">
+						<label>备件：</label>
+						<select class="mui-btn-block" style="width: 40%;float: left;">
+							<option value="item-1">有</option>
+							<option value="item-2">无</option>
+						</select>
+						<a href="replace.html">选择备件</a>
+					</div>
+					<button  class="mui-btn mui-pull-right" style="font-size: 18px;margin: .5em .7em;">
+						<a href="index.html">保存</a>
+					</button>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			mui.init()
+		</script>
+	</body>
+
+</html>

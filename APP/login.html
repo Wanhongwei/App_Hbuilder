@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<style>
+			.area {
+				margin: 20px auto 0px auto;
+			}
+			
+			.mui-input-group {
+				margin-top: 10px;
+			}
+			
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}
+			
+			.mui-input-group label {
+				width: 22%;
+			}
+			
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 78%;
+			}
+			
+			.mui-checkbox input[type=checkbox],
+			.mui-radio input[type=radio] {
+				top: 6px;
+			}
+			
+			.mui-content-padded {
+				margin-top: 25px;
+			}
+			
+			.mui-btn {
+				padding: 10px;
+			}
+			
+			.link-area {
+				display: block;
+				margin-top: 25px;
+				text-align: center;
+			}
+			
+			.spliter {
+				color: #bbb;
+				padding: 0px 8px;
+			}
+			
+			.oauth-area {
+				position: absolute;
+				bottom: 20px;
+				left: 0px;
+				text-align: center;
+				width: 100%;
+				padding: 0px;
+				margin: 0px;
+			}
+			
+			.oauth-area .oauth-btn {
+				display: inline-block;
+				width: 50px;
+				height: 50px;
+				background-size: 30px 30px;
+				background-position: center center;
+				background-repeat: no-repeat;
+				margin: 0px 20px;
+				/*-webkit-filter: grayscale(100%); */
+				border: solid 1px #ddd;
+				border-radius: 25px;
+			}
+			
+			.oauth-area .oauth-btn:active {
+				border: solid 1px #aaa;
+			}
+			
+			.oauth-area .oauth-btn.disabled {
+				background-color: #ddd;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">登录</h1>
+		</header>
+		<div class="mui-content">
+			<form id='login-form' class="mui-input-group">
+				<div class="mui-input-row">
+					<label>账号</label>
+					<input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
+				</div>
+				<div class="mui-input-row">
+					<label>密码</label>
+					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
+				</div>
+			</form>
+			<form class="mui-input-group">
+				<ul class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell">
+						自动登录
+						<div id="autoLogin" class="mui-switch">
+							<div class="mui-switch-handle"></div>
+						</div>
+					</li>
+				</ul>
+			</form>
+			<div class="mui-content-padded">
+				<button id='login' class="mui-btn mui-btn-block mui-btn-primary">登录</button>
+				<div class="link-area"><a id="check">版本查看</a> <span class="spliter">|</span> <a id='serviceSet'>服务配置</a>
+				</div>
+				</div>
+			</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/mui.enterfocus.js"></script>
+		<!-- <script src="js/methods.js"> </script> -->
+		<script src="js/muiMethods.js"> </script>
+		<!-- <script src="./login.js"></script> -->
+		<script src="js/app.js"></script>
+		<script src="js/common.js"></script>
+		<script>
+			(function($, doc) {
+				$.init({
+					statusBarBackground: '#f7f7f7'
+				});
+				$.plusReady(function() {
+					// 页面加载时触发
+					var pinf = plus.push.getClientInfo();  
+					var cid = pinf.clientid;//客户端标识  
+					console.log(cid)
+					var codeList=[];
+					plus.push.addEventListener( "click", function ( msg ) {
+						//1. 点击消息
+						//2.设置本地缓存 item
+						//3.页面跳转后设置该条记录为已读;
+						var item={Aeid:'',AcCode:'',Code:''};
+						item.Code=msg.content.split(",")[msg.content.split(",").length-1];
+						// localStorage.setItem('item',JSON.stringify(item));
+						mui.openWindow({
+							url: './main.html',
+							id: 'main',
+							createNew:true
+						});
+						// console.log(item.Code)
+						// //设置已读;
+						// readed(item.Code);修改时间:20200107 批量已读修改
+						
+						readed();
+						}, false );
+					// plus.screen.lockOrientation("portrait-primary");
+					var settings = app.getSettings();
+					var state = app.getState();
+					//自动登录添加-------若为自动登录并且tokenId不为空,则直接登录,否则重新登录
+					if(settings.autoLogin&& state.token){ 
+						console.log(JSON.stringify(settings.loginInfo))
+						submits(settings.loginInfo);
+					}
+					//20191223-----------
+					var mainPage = plus.webview.getWebviewById("main");
+					// var main_loaded_flag = false;
+					// if(!mainPage){
+					// 	mainPage = $.preload({
+					// 		"id": 'main',
+					// 		"url": 'main.html'
+					// 	});
+					// }else{
+					// 	main_loaded_flag = true;
+					// }
+					
+				//V1.1.0
+				//服务配置
+				document.getElementById("check").addEventListener('tap', function() {
+					 mui.toast('V1.1.0')
+				});
+					//服务配置
+				document.getElementById("serviceSet").addEventListener('tap', function() {
+					 mui.openWindow({
+						url: 'reg.html',
+						id: 'reg',
+						show: {
+							aniShow: 'pop-in'
+						},
+						createNew:true
+					 });
+				});
+					//20191223---------- 
+					// mainPage.addEventListener("loaded",function () {
+					// 	main_loaded_flag = true;
+					// });
+					//20191223-------------
+					// var toMain = function() {
+					// 	//使用定时器的原因：
+					// 	//可能执行太快，main页面loaded事件尚未触发就执行自定义事件，此时必然会失败
+					// 	var id = setInterval(function () {
+					// 		if(main_loaded_flag){
+					// 			clearInterval(id);
+					// 			$.fire(mainPage, 'show', null);
+					// 			mainPage.show("pop-in");
+					// 		}
+					// 	},20);
+					// };
+					setTimeout(function() {
+						//关闭 splash
+						plus.navigator.closeSplashscreen();
+					}, 600);
+					//检查 "登录状态/锁屏状态" 结束
+					var loginButton = doc.getElementById('login');
+					var accountBox = doc.getElementById('account');
+					var passwordBox = doc.getElementById('password');
+					var autoLoginButton = doc.getElementById("autoLogin");
+					loginButton.addEventListener('tap', function(event) {
+						var loginInfo = {
+							account: accountBox.value,
+							password: passwordBox.value
+						};
+						//1.版本号验证;H51F40F0E
+						//2.账号密码验证;
+						//3.访问后台,成功则页面跳转
+						app.login(loginInfo, function(err) {
+							if (err) {console.log(1)
+								plus.nativeUI.toast(err);
+								return;
+							}
+							submits(loginInfo);
+							// toMain();//取消..,原因登录成功后再success里面做处理
+						});
+						// var isLogin=false;
+						// checkVersion(); 
+						// if(isLogin){
+						// 	app.login(loginInfo, function(err) {
+						// 		if (err) {
+						// 			plus.nativeUI.toast(err);
+						// 			return;
+						// 		}
+						// 		submits(loginInfo);
+						// 		// toMain();//取消..,原因登录成功后再success里面做处理
+						// 	});
+						// }
+						
+					});
+					autoLoginButton.classList[settings.autoLogin ? 'add' : 'remove']('mui-active')
+					autoLoginButton.addEventListener('toggle', function(event) {
+						setTimeout(function() {
+							var isActive = event.detail.isActive;
+							settings.autoLogin = isActive;
+							var loginInfo = {
+								account: accountBox.value,
+								password: passwordBox.value
+							};
+							settings.loginInfo = loginInfo;
+							console.log(JSON.stringify(settings.loginInfo))
+							app.setSettings(settings);
+						}, 50);
+					}, false);
+					//版本号验证; 
+					function checkVersion(){
+						/*判断当前环境是Android还是iOS*/
+						var platform='';
+						var u = navigator.userAgent;
+						// 安卓
+						var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1;
+						// IOS
+						var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); 
+						if(isAndroid){
+						　　platform='android';
+						}else if(isiOS){
+						　　platform='ios';
+						}
+						var version=null;
+						plus.runtime.getProperty(plus.runtime.appid,function(inf){
+								version=inf.version;
+						　　　　});
+							$.ajaxRequest('app/VersionUpdate/NewVersion?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM&appKey=VMT-A7&version='+version+'&platform='+platform,{
+								type: "get",
+								success:function(data){
+									if(data.data.newVersion==1){
+										//下载更新
+										update(version,platform);
+									}else{
+										// isLogin=true;
+										mui.toast('已是最新版本！')
+									}
+									
+								},
+								error:function(data){
+									
+								}
+							});
+						}
+						//下载更新
+						function update(version,platform){
+							$.ajaxRequest('app/VersionUpdate/Down?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM&appKey=VMT-A7&platform='+platform,{
+								type: "get",// data:userInfo,
+								success:function(data){
+									console.log(JSON.stringify(data))
+									if(data.code==0){
+										dowload(version,platform);
+									}else{
+										mui.toast('请联系管理员，新版本不存在！')
+									}
+									
+								},
+								error:function(data){
+									
+								}
+							});
+						};
+						// 开始下载
+						function dowload (version,platform){
+							var btn = ["确定升级", "取消"];
+							 var _msg="发现新版本:V"+version;
+							 if(platform=='ios'){
+								   var _msg = "发现新版本:V" + normItem;
+								 //plus.nativeUI.alert("发现新版本:V" + normItem);
+								 mui.confirm(_msg, '升级确认', btn, function (e) {
+									 if (e.index == 0) { //执行升级操作
+										 document.location.href = 'https://itunes.apple.com/cn/app/san-gu-hui/id131812xxxx?mt=8'; //上新APPStore下载地址
+										 plus.runtime.openURL('https://service.dcloud.net.cn/build/download/4f8dc5a0-251d-11ea-b72d-e7b21ad09460'); //调用本地浏览器打开网址  
+									 }
+								 });
+								 return;
+							 }else{
+								 mui.confirm(_msg, '升级确认', btn, function (e) {
+								 	if (e.index == 0) { //执行升级操作
+								 		plus.nativeUI.toast("正在准备环境，请稍后！");
+								 		var dtask = plus.downloader.createDownload('https://service.dcloud.net.cn/build/download/4f9c0740-251d-11ea-a6a7-45672b7f26b4' , {method:"GET"}, function (d, status) {
+								 			if (status == 200) {
+								 				var path = d.filename;//下载apk
+								 				plus.runtime.install(path);// 自动安装apk文件
+								 			} else {
+								 				plus.nativeUI.alert('版本更新失败:' + status);
+								 			}
+								 		});
+								 		dtask.start();
+								 	}
+								 });
+							 }
+							};
+					//点击登录访问服务器
+			function submits(userInfo){//common/Comm/Login?userName=admin&password=111111&secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM
+					$.ajaxRequest('common/CommShyh/Login?userName='+userInfo.account+'&password='+userInfo.password+'&secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM&cid='+cid,{
+						type: "post",// data:userInfo,
+						success:function(data){console.log(JSON.stringify(data))
+							if(data.code==0){
+								//登录后将tokenId缓存---------------------
+								state.token = data.token;
+								app.setState(state);
+								localStorage.setItem('cid',cid);
+								localStorage.setItem('userAccount',JSON.stringify(userInfo));
+								localStorage.setItem('userInfo',JSON.stringify(data.data));
+								localStorage.setItem('token',data.token)
+								localStorage.setItem('userCode',data.data.UserCode);
+								localStorage.setItem('LoginId',data.data.LoginId);
+								//LoginId 
+								// app.createState(name,tokenId);
+								//消息推送-------------------------
+								//1.打开页面之前设置localstome item
+								//2.先清除消息
+								//3.定时器,间隔second 秒
+								codeList=[];
+								var setInter=setInterval(function (){
+									// plus.push.clear();
+									//----------------------------------------------------20200115
+									// createLocalPushMsg(data.data.UserCode);
+								},5000)
+								
+								$.openWindow({
+									id: 'main',
+									url: 'main.html',
+									preload: true,
+									show: {
+										aniShow: 'pop-in'
+									},
+									styles: {
+										popGesture: 'hide'
+									},
+									waiting: {
+										autoShow: false
+									}
+								});
+								mui.fire(mainPage,'refresh');
+								
+							}else{
+								mui.toast(data.message)
+							}
+							
+						},
+						error:function(data){
+							mui.toast(data.message)
+						}
+					});
+				};
+				//Push模块管理推送消息功能，可以实现在线、离线的消息推送，通过plus.push可获取推送消息管理对象。
+				/**
+				 * 本地创建一条推动消息
+				 */
+				function createLocalPushMsg(usercode){
+					//获取服务器推送消息
+					$.ajaxRequest('shyh.app/First/LoadMsg?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM&userCode='+usercode,{
+						type: "get",// data:userInfo,
+						success:function(data){
+							if(data.code==0){
+								// console.log(JSON.stringify(data))
+								//循环加载消息
+								//{"Number":1,"Aeid":250,"AcName":"物料异常","AcCode":"02","Code":"1912170009","Msg":"缺,料","CallDate":"2019-12-17 10:18:06","Ename":null}
+								var mesData=data.data;
+								// console.log(mesData)
+								for(var i=0;i<mesData.length;i++){
+									if(codeList.indexOf(mesData[i].Code)==-1){
+										var options = {cover:false,sound:"system"};
+										var str = mesData[i].Msg+',';
+										str+=mesData[i].Code;
+										plus.push.createMessage( str, "Map", options );
+										codeList.push(mesData[i].Code);
+									}
+									
+								}
+								
+							}else{
+								mui.toast('')
+							}
+							
+						},
+						error:function(data){
+							
+						}
+					});
+					
+				};
+				function readed(){
+					if(codeList.length>0){
+						for(var i=0;i<codeList.length;i++){
+							// console.log(codeList[i])
+							$.ajaxRequest('shyh.app/First/ReadMsg?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM&code='+codeList[i],{
+								type: "get",// data:userInfo,
+								success:function(data){
+									if(data.code==0){
+										//循环加载消息
+										// mui.toast('已处理！');
+										// alert("成功") 
+									}else{
+										// alert("失败")
+									}
+									
+								},
+								error:function(data){
+									
+								}
+							});
+						}
+					}
+					
+					codeList=[]; 
+					plus.push.clear();
+				};
+					var backButtonPress = 0;
+					$.back = function(event) {
+						backButtonPress++;
+						if (backButtonPress > 1) {
+							plus.runtime.quit();
+						} else {
+							plus.nativeUI.toast('再按一次退出应用');
+						}
+						setTimeout(function() {
+							backButtonPress = 0;
+						}, 1000);
+						return false;
+					};
+				});
+			}(mui, document));
+		</script>
+	</body>
+
+</html>

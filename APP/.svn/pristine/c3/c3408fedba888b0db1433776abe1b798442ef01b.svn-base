@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/iconfont.css" />
+		<script src="js/vue/vue.js"></script>
+		<style>
+			html,body {
+			height:100%;
+			}
+			ul {
+				font-size: 14px;
+				/* color:black; */
+			}
+			#colorli {
+				background-color: burlywood
+			}
+			.mui-btn {
+				padding: 10px;
+			}
+			.mui-grid-view.mui-grid-9 {
+			    margin: 0;
+			    padding: 0;
+			    border-top: 1px solid #eee;
+			    border-left: 1px solid #eee;
+			    background-color:white;
+			}
+			.mui-table-view-cell {
+			    margin: 0;
+			    padding: 11px 10px;
+			    vertical-align: top;
+			    /* border-right: 3px solid #E8E8E8; */
+			    border-bottom: 0px solid #999999;
+			}
+			/* 设置中间cell内边距 */
+			.mui-table-view-chevron .mui-table-view-cell {
+			    padding-right: 5px;
+			}
+			.mui-table-view:before {
+			    position: absolute;
+			    right: 0;
+			    left: 0;
+			    height: 1px;
+			    content: '';
+			    -webkit-transform: scaleY(.5);
+			    transform: scaleY(.5);
+			    background-color: white;
+			    top: -1px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="padding-right: 15px;background-color: #007AFF;">
+			<h1 class="mui-title">我的任务</h1>
+			<span class="mui-pull-right mui-icon mui-icon-home" style="color: white"></span>
+		</header>
+		<div id="main" class="mui-content">
+			<div class="mui-content-padded" >
+				 <ul class="mui-table-view mui-grid-view mui-grid-9">
+				     <li class=" mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="page/peopleManager/index.html">
+				             <!-- <span class="mui-icon mui-icon-home"></span> -->
+							 <span>人员类</span>
+				             <div class="mui-media-body">({{people}})</div></a></li>
+				     <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="page/materielManager/index.html">
+				             <span>物料类</span>
+				             <div class="mui-media-body">({{materiel}})</div></a></li>
+				     <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="page/equipmentManager/index.html">
+				             <span>设备类</span>
+				             <div class="mui-media-body">({{equipment}})</div></a></li>
+				     <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="page/quality/index.html">
+				             <span>质量类</span>
+				             <div class="mui-media-body">({{quality}})</div></a></li>
+				 </ul>
+			</div>
+			<div class="mui-content-padded" >
+				 <div class="mui-scroll-wrapper" style="position: static;background-color: white;height: 250px;">
+				 	<div class="mui-scroll" style="position: static;padding: 10px;">
+						<ul  class="mui-table-view mui-table-view-chevron" v-for="(item,i) in receiveName">
+							<!-- 分类/单号/呼叫事件/呼叫时间 -->
+							<li class="mui-table-view-cell" v-on:tap="list(item)">
+								{{i+1}}.&nbsp;&nbsp; {{item.AcName}}&nbsp;&nbsp; {{item.Code}}&nbsp;&nbsp;{{item.Msg}}<br>{{item.CallDate}} 
+							</li>
+						</ul>
+				 	</div>
+				 </div>
+			</div>
+			<div class="mui-content-padded" >
+				 <ul class="mui-table-view mui-grid-view mui-grid-9">
+				     <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="#">
+							  <span class="mui-icon iconfont icon-weijieshou"></span>
+				             <div class="mui-media-body">未接收({{receiveMes.unreceived}})</div></a></li>
+				     <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="#">
+				             <span class="mui-icon iconfont icon-yijieshou"></span>
+				             <div class="mui-media-body">已接收({{receiveMes.receive}})</div></a></li>
+				     <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="#">
+				             <span class="mui-icon iconfont icon-yiwancheng"></span>
+				             <div class="mui-media-body">已完成({{receiveMes.complete}})</div></a></li>
+				 </ul>
+			</div>	
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+		<script src="js/muiMethods.js"> </script>
+		<script src="js/iconfont.js"></script>
+		<script>
+			(function($, doc) {
+				 var vm=new Vue({  
+						el:'#main',  
+						data:{
+							people:'',materiel:'',equipment:'',quality:'',
+							receiveName:[],
+							receiveMes:{unreceived:'',receive:'',complete:''}
+						},
+						mounted:function() {
+						   mui.init({
+							
+						   });
+						   
+						   mui.plusReady(function() {
+							   window.addEventListener('refresh', function(e){//执行刷新
+							       vm.getAjaxData();
+							   });
+						   	//获取手机高度
+							// var height = document.documentElement.clientHeight || document.body.clientHeight;
+							vm.getAjaxData();
+						   	mui('.mui-scroll-wrapper').scroll({
+						   		scrollY: true, //是否竖向滚动
+						   		scrollX: false, //是否横向滚动
+						   		 startX: 0, //初始化时滚动至x
+						   		 startY: 0, //初始化时滚动至y
+						   		 indicators: true, //是否显示滚动条
+						   		bounce: false,//是否启用回弹,
+						   		 deceleration: 0.0005 
+						   	});
+						   	
+						   });
+						 },
+						 methods:{
+							 getAjaxData:function(){
+								 var UserCode=localStorage.getItem('userCode');
+								 //-----------中间部分
+								 $.ajaxRequest('shyh.app/First/LoadFirstMsg?userCode='+UserCode+'&secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM',{
+								 	type: "get",
+								 	success:function(data){
+								 		//上面数据
+								 		vm.receiveName=data.data.centerMsg;
+								 		//中间数据
+								 		var updata=[];
+								 		updata=data.data.upMsg;
+								 		for(item in updata){
+								 			if(updata[item].Key=='01'){ vm.equipment=updata[item].Value};
+								 			if(updata[item].Key=='02'){ vm.materiel=updata[item].Value};
+								 			if(updata[item].Key=='03'){ vm.people=updata[item].Value};
+								 			if(updata[item].Key=='04'){ vm.quality=updata[item].Value};
+								 		};
+								 		//下面数据
+								 		vm.receiveMes.unreceived=data.data.downMsg[0][1];	
+								 		vm.receiveMes.receive=data.data.downMsg[1][1];
+								 		vm.receiveMes.complete=data.data.downMsg[2][1];
+								 	}, 
+								 	error:function(data){
+								 		 
+								 	}
+								 });
+							 },
+							 list: function(item) {
+							 	mui.openWindow({
+							 		url: 'workDetail.html',
+							 		id: 'workDetail',
+							 		extras: {
+							 			item: item,
+										receiveMes:vm.receiveMes
+							 		}
+							 	});
+							 	if(!mui.os.plus){
+							 		localStorage.setItem('item',JSON.stringify(item));
+									localStorage.setItem('receiveMes', vm.receiveMes);
+							 	}
+							 },
+							 }
+				})
+				
+			}(mui, document));
+		</script>
+	</body>
+
+</html>

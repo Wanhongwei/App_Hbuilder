@@ -1,0 +1,28 @@
+@font-face {font-family: "iconfont";
+  src:url('../fonts/iconfont.ttf') format('truetype')/* chrome, firefox, opera, Safari, Android, iOS 4.2+ */; /* iOS 4.1- */
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-weijieshou:before {
+  content: "\e70c";color:#2187E7;
+}
+
+.icon-yiwancheng:before {
+  content: "\e610";color:#4CD964;
+}
+
+.icon-zichanguanli:before {
+  content: "\e612";
+}
+
+.icon-yijieshou:before {
+  content: "\e689";color:rgb(58, 201, 168);
+}
+

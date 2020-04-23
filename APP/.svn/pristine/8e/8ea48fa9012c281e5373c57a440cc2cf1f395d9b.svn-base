@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/vue/vue.js"></script>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/muiMethods.js"> </script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="padding-right: 15px;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">质量类</h1>
+			<!-- <span class="mui-pull-right mui-icon mui-icon-home"></span> -->
+		</header>
+		<div class="mui-content" id="qualityIndex">
+			<div class="mui-content-padded" >
+				 <ul class="mui-table-view mui-grid-view mui-grid-9">
+				     <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="./fistinspect/index.html">
+				             <!-- <span class="mui-icon mui-icon-home"></span> -->
+							 <span>首检</span>
+				             <div class="mui-media-body">({{tableData.SjQty}})</div></a></li>
+				     <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="lastinspect/index.html">
+				             <span>末检</span>
+				             <div class="mui-media-body">({{tableData.MjQty}})</div></a></li>
+				     <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="processinspect/index.html">
+				             <span>过程检</span>
+				             <div class="mui-media-body">({{tableData.GjQty}})</div></a></li>
+				     <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="abnomal/index.html">
+				             <span >质量异常</span>
+				             <div class="mui-media-body">({{tableData.ErrorQty}})</div></a></li>
+					<!-- <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="#">
+							 <span class="mui-icon mui-icon-home"></span>
+							 <div class="mui-media-body">待开发</div></a></li>
+					 <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="#">
+							 <span class="mui-icon mui-icon-home"></span>
+							 <div class="mui-media-body">待开发</div></a></li> -->
+				 </ul>
+			</div>
+			</div>
+		<script type="text/javascript">
+			mui.init()
+			var vm=new Vue({
+				el:'#qualityIndex',
+				data:{
+					tableData:[]
+				},
+				mounted:function() {
+				mui.init({
+					swipeBack:true, //启用右滑关闭功能
+				});
+				  mui.plusReady(function() {
+					   window.addEventListener('refresh', function(e){//执行刷新
+						   vm.getAjaxData();
+					   });
+				 vm.getAjaxData();
+				  });
+				 },
+				 methods:{
+					 getAjaxData:function(){
+						 var UserCode=localStorage.getItem('userCode');
+						 //-----------表格数据
+						 mui.ajaxRequest('shyh.app/Check/GetCount?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM&userCode='+UserCode+'',{
+							type: "get",
+							success:function(data){
+								vm.tableData=data.data;
+								console.log(JSON.stringify(vm.tableData))
+							}, 
+							error:function(data){
+								 mui.toast('erro')
+							}
+						 });
+					 },
+				}
+			})
+		</script>
+	</body>
+
+</html>

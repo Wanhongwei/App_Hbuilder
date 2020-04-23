@@ -1,0 +1,331 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../../js/element/index.css"/>
+		
+		<style>
+			.mui-middle{
+				 display:list-item;
+				  text-align:center;
+			}
+			.el-form-item {
+			    margin-bottom: 20px;
+			}
+			.el-input {
+			    position: relative;
+			    font-size: 14px;
+			    display: inline-block;
+			    width:100%;
+			}
+			.el-textarea__inner {
+			    display: block;
+			    resize: vertical;
+			    padding: 5px 15px;
+			    line-height: 1.5;
+			    -webkit-box-sizing: border-box;
+			    box-sizing: border-box;
+			    width: 80%;
+			    font-size: inherit;
+			    color: #606266;
+			    background-color: #FFF;
+			    background-image: none;
+			    border: 1px solid #DCDFE6;
+			    border-radius: 4px;
+			    -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+			    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="padding-right: 15px;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">设备维修</h1>
+			<!-- <span class="mui-pull-right mui-icon mui-icon-home"></span> -->
+		</header>
+		<div class="mui-content" id="repairIndex">
+			<div class="mui-content-padded">
+				<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="70px" class="demo-ruleForm">
+				  <el-form-item label="设备:"  >
+				    <el-input v-model="ruleForm.Ename"></el-input>
+				  </el-form-item>
+				  <el-form-item label="原因:" >
+				    <el-input v-model="ruleForm.Msg"></el-input>
+				  </el-form-item>
+				  <el-form-item label="日期:" prop="daalTime">
+				    <el-date-picker  :default-value="timeDefaultShow" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间" label="日期:" type="datetime" v-model="ruleForm.daalTime">
+				    </el-date-picker>
+				  </el-form-item>
+				  <el-form-item label="诊断:" prop="Idea">
+				    <el-input type="textarea" v-model="ruleForm.Idea"></el-input>
+				  </el-form-item>
+				  <el-form-item label="结果:" prop="Result">
+					   <el-select v-model="ruleForm.Result" placeholder="请选择活动区域">
+					        <el-option label="OK" value="OK"></el-option>
+					        <el-option label="NO" value="NO"></el-option>
+					   </el-select>
+				  </el-form-item>
+				  <el-form-item label="备件:" prop="MspIds">
+				    <!-- <el-input v-model="ruleForm.MspIds"></el-input> -->
+					<el-badge :value="ruleForm.SelecteEquPars.length" class="item" type="primary">
+					  <el-button  @click="dialogFormVisible = true" size="small">查看备件</el-button>
+					</el-badge>
+				  </el-form-item>
+				  <el-form-item label="备注:" prop="Memo">
+				    <el-input type="textarea" v-model="ruleForm.Memo"></el-input>
+				  </el-form-item>
+				  <el-form-item>
+				    <el-button style="float: right;" type="primary" @click="submitForm('ruleForm')">保存</el-button>
+				  </el-form-item>
+				</el-form>
+			</div>
+			<el-dialog width="90%" title="设备详情" center :visible.sync="dialogFormVisible" @opened="opened">
+			  <el-table
+			      ref="multipleTable"
+			      :data="tableData"
+			      tooltip-effect="dark"
+			      style="width: 100%"
+			      @selection-change="handleSelectionChange">
+			      <el-table-column
+			        type="selection"
+			        width="30" label="全选">
+			      </el-table-column>
+			      <el-table-column
+			        label="名称"
+			        width="auto"
+					prop="MspName">
+			      </el-table-column>
+			      <el-table-column
+					label="数量" width="140px"
+			         prop="UseQty" >
+					<template slot-scope="scope">
+						 <el-input-number style="width: 100%;" size="small" v-model="scope.row.UseQty" :min="0" ></el-input-number>
+					</template>
+			      </el-table-column>
+			    </el-table>
+			    <div style="margin-top: 20px;text-align: center;">
+			      <el-button @click="toggleSelection(tableData)">{{selectAll}}</el-button>
+			      <el-button type="primary" @click="send">提交</el-button>
+			    </div>
+			</el-dialog>
+		</div>
+	</body>
+	<script src="../../../js/vue/vue.js"></script>
+	<script src="../../../js/mui.min.js"></script>
+	<script src="../../../js/element/index.js"></script>
+	<script src="../../../js/muiMethods.js"> </script>
+		<script type="text/javascript">
+			 var vm=new Vue({ 
+				 el:'#repairIndex',
+				 data:{
+					 //弹出框定义
+					 timeDefaultShow:'',
+					formLabelWidth:'120px',
+					dialogFormVisible:false,
+					selectAll:'全选',
+					tableData: [],
+					multipleSelection: [],
+					//h缓存数据
+					rowData:'',aeid:'',
+					equipData:[],//equipData:[{配件名称：数量}]
+				 	ruleForm:{Ename:'',Msg:'',daalTime:'',Idea:'',Memo:'',Result:'OK',MspIds:'',SelecteEquPars:[],AllSelectEquPars:[]},
+					rules:{  
+						Idea: [
+						{ required: true, message: '请输入诊断信息', trigger: 'blur' }
+					  ],
+					  daalTime: [
+					  	{ required: true, message: '请选择日期', trigger: 'blur' }
+					  ],
+					  Result: [
+					  	{ required: true, message: '请选择结果', trigger: 'blur' }
+					  ]}
+				 },
+				 mounted:function() {
+					 mui.init({
+						 beforeback: function() {
+	 　　　　 //获得父页面的webview
+								   var list = plus.webview.currentWebview().opener();
+	 　　　　 //触发父页面的自定义事件(refresh),从而进行刷新
+								   mui.fire(list, 'refresh');
+								   //返回true,继续页面关闭逻辑
+								   return true;
+							   }
+					 });
+					   mui.plusReady(function() {
+						   window.addEventListener('refresh', function(e){//执行刷新
+						   		vm.getRepairData();
+						   });
+						   vm.getRepairData();
+					});
+				},
+				methods:{
+				 getRepairData:function(){
+					 vm.rowData=localStorage.getItem('rowDatarepair');
+					 vm.aeid=JSON.parse(vm.rowData).Aeid;
+					 vm.userId=JSON.parse(localStorage.getItem('userInfo')).UserId;
+					 vm.userName=JSON.parse(localStorage.getItem('userInfo')).UserName;
+					 mui.ajaxRequest('shyh.app/Equ/GetTaskInfo?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM&aeid='+vm.aeid,{
+						type: "Get",
+						success:function(data){
+							vm.ruleForm=data.data;
+							if(!vm.ruleForm.daalTime){
+								vm.ruleForm.daalTime=vm.formate("YYYY-mm-dd HH:MM:SS",new Date());
+							}
+							vm.ruleForm.SelecteEquPars=data.data.SelecteEquPars;
+							vm.tableData=data.data.AllSelectEquPars;
+						}, 
+						error:function(xhr){
+							mui.toast(JSON.stringify(JSON.parse(xhr.response).message),{ duration:'long'});
+						}
+					 });
+				 },
+				formate: function(fmt,date) { //author: meizz
+				   let ret;
+				      const opt = {
+				          "Y+": date.getFullYear().toString(),        // 年
+				          "m+": (date.getMonth() + 1).toString(),     // 月
+				          "d+": date.getDate().toString(),            // 日
+				          "H+": date.getHours().toString(),           // 时
+				          "M+": date.getMinutes().toString(),         // 分
+				          "S+": date.getSeconds().toString()          // 秒
+				          // 有其他格式化字符需求可以继续添加，必须转化成字符串
+				      };
+				      for (let k in opt) {
+				          ret = new RegExp("(" + k + ")").exec(fmt);
+				          if (ret) {
+				              fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+				          };
+				      };
+				      return fmt;
+				},
+				 send:function(){
+					var isClose = false; 
+					//判断选中的数据中,数量是否为0;是则提示选择数量;否则关闭弹出框;
+					if(vm.multipleSelection.length>0){
+							for(var i=0;i<vm.multipleSelection.length;i++){
+								if(vm.multipleSelection[i].UseQty==0){
+									mui.toast(vm.multipleSelection[i].MspName+'数量为：0',{duration:'long'})
+									isClose = true; 
+								}
+							}
+					}
+						vm.dialogFormVisible=isClose;
+					vm.ruleForm.SelecteEquPars=vm.multipleSelection;
+					vm.addSelect(vm.multipleSelection);//备件数量数据拼接
+					//修改时间:20191225 修改内容：tableData数据；
+					// vm.SelecteEquPars=vm.multipleSelection;
+					
+				 },
+				 addSelect:function(val){
+					//备件数量数据拼接
+					if(val.length>0){
+						for(var i=0;i<val.length;i++){
+							var obj=val[i].MspId+':'+val[i].UseQty+',';
+							vm.equipData+=obj;
+						}
+					} 
+				 },
+				 submitForm:function(formName) {
+						vm.$refs[formName].validate(function(valid) {
+						  if (valid) {
+							vm.formDataSave();
+						  } else {
+							console.log('error submit!!');
+							return false;
+						  }
+						});
+					  },
+					//表单数据保存
+					formDataSave:function(){console.log(vm.ruleForm.daalTime)
+						mui.ajaxRequest('shyh.app/Equ/DealTask?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM',{
+							type: "post",
+							data:{
+								aeid:vm.aeid,
+								daalTime:vm.ruleForm.daalTime,
+								dealMan:vm.userId,
+								dealManName:vm.userName,
+								idea:vm.ruleForm.Idea,
+								Memo:vm.ruleForm.Memo,
+								result:vm.ruleForm.Result,
+								MspIds:vm.equipData
+							},
+							success:function(data){
+								 if(data.code==0){
+									 mui.toast('保存成功！');
+									 mui.back();
+								 }
+							}, 
+							error:function(xhr){
+								mui.toast(JSON.stringify(JSON.parse(xhr.response).message),{ duration:'long'});
+							}
+						});
+					},
+				   toggleSelection:function(rows) { 
+					  if(vm.selectAll=='全选'){
+					  				  vm.selectAll='取消全选';
+					  }else{
+					  				vm.selectAll='全选';
+					  }
+					  if (rows) {
+						rows.forEach(function(row) {
+						  vm.$refs.multipleTable.toggleAllSelection(row);
+						});
+					  } else {
+						vm.$refs.multipleTable.clearSelection();
+					  }
+					  
+					},
+					selection:function(rows) {
+						var selectTable=[];
+					  if (rows.length!=0) {
+						  for(var i=0;i<vm.tableData.length;i++){
+						  	for(var j=0;j<rows.length;j++){
+						  		if(vm.tableData[i].MspName==rows[j].MspName){
+						  			selectTable.push(vm.tableData[i]);
+						  		}
+						  	}
+						  	
+						  }
+						selectTable.forEach(function(row) {
+						  vm.$refs.multipleTable.toggleRowSelection(row);
+						});
+					  } else {
+						vm.$refs.multipleTable.clearSelection();
+					  }
+					},
+					handleSelectionChange:function(val) {
+						vm.multipleSelection=val;
+					},
+					opened:function(){
+						if(vm.multipleSelection.length==vm.tableData.length){
+								vm.selectAll='取消全选';
+						};
+						if(vm.multipleSelection.length==0){
+							   vm.selectAll='全选';
+						};
+						// vm.getEquipData(); 修改时间:20191225 修改内容：
+						vm.equipData='';//打开窗口时先清空设备拼接的返回值
+						vm.$refs.multipleTable.clearSelection();
+						vm.selection(vm.ruleForm.SelecteEquPars);
+					},
+					getEquipData:function(){
+						 vm.rowData=localStorage.getItem('rowDatarepair');
+						 vm.aeid=JSON.parse(vm.rowData).Aeid;
+						 mui.ajaxRequest('shyh.app/Equ/GetTaskInfo?secretkey_for_vmwebapi=0987654321&appkey_for_vmwebapi=VMT-EM&aeid='+vm.aeid,{
+							type: "Get",
+							success:function(data){
+								vm.SelecteEquPars=data.data.SelecteEquPars;
+							}, 
+							error:function(xhr){
+								mui.toast(JSON.stringify(JSON.parse(xhr.response).message),{ duration:'long'});
+							}
+						 });
+					}
+				}	
+			})
+		</script>
+</html>
